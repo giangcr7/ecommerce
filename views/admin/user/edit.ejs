@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Update User - <%= title %>
+    </title>
+
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            $("#avatarInput").change(function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const imgURL = URL.createObjectURL(file);
+                    $("#avatarPreview").attr("src", imgURL);
+                    $("#avatarPreview").css({ "display": "block" });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+
+    <%- include('../partials/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../partials/sidebar') %>
+
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Update User</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin/user">Users</a></li>
+                                <li class="breadcrumb-item active">Update</li>
+                            </ol>
+
+                            <% if(typeof success !=='undefined' && success.length> 0) { %>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <%= success %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <% if(typeof error !=='undefined' && error.length> 0) { %>
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <%= error %>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <% } %>
+
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <i class="fas fa-user-edit me-1"></i>
+                                                    Cập nhật thông tin: <b>
+                                                        <%= user.username %>
+                                                    </b>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form action="/admin/user/edit/<%= user.id %>" method="POST"
+                                                        enctype="multipart/form-data">
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="username"
+                                                                        type="text" name="username"
+                                                                        value="<%= user.username %>" required />
+                                                                    <label for="username">Username</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="email" type="email"
+                                                                        name="email" value="<%= user.email %>"
+                                                                        required />
+                                                                    <label for="email">Email address</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="fullName"
+                                                                        type="text" name="fullName"
+                                                                        value="<%= user.fullName || '' %>" />
+                                                                    <label for="fullName">Full Name</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="phone" type="text"
+                                                                        name="phone" value="<%= user.phone || '' %>" />
+                                                                    <label for="phone">Phone Number</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-floating mb-3">
+                                                            <input class="form-control" id="address" type="text"
+                                                                name="address" value="<%= user.address || '' %>" />
+                                                            <label for="address">Address</label>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="password"
+                                                                        type="password" name="password"
+                                                                        placeholder="Password" />
+                                                                    <label for="password">Mật khẩu mới (Bỏ trống để giữ
+                                                                        nguyên)</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <select class="form-select" id="role" name="roleId">
+                                                                        <% roles.forEach(role=> { %>
+                                                                            <option value="<%= role.id %>"
+                                                                                <%=user.roleId===role.id ? 'selected'
+                                                                                : '' %>>
+                                                                                <%= role.name %>
+                                                                            </option>
+                                                                            <% }) %>
+                                                                    </select>
+                                                                    <label for="role">Vai trò (Role)</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="mb-3 p-3 border rounded bg-light">
+                                                            <label class="form-label fw-bold">Avatar</label>
+
+                                                            <div class="d-flex align-items-center gap-5">
+
+                                                                <% if(user.avatar) { %>
+                                                                    <div class="text-center">
+                                                                        <% let avatarUrl=user.avatar; if (avatarUrl &&
+                                                                            !avatarUrl.startsWith('http')) {
+                                                                            avatarUrl='/' +
+                                                                            avatarUrl.replace(/^public[\\/]/, ''
+                                                                            ).replace(/\\/g, '/' ); } %>
+                                                                            <img src="<%= avatarUrl %>"
+                                                                                alt="Current Avatar"
+                                                                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #adb5bd;">
+                                                                            <div class="small text-muted mt-1">Hiện tại
+                                                                            </div>
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div class="text-center text-muted">Chưa có
+                                                                            avatar</div>
+                                                                        <% } %>
+
+                                                                            <div class="text-muted"><i
+                                                                                    class="fas fa-arrow-right"></i>
+                                                                            </div>
+
+                                                                            <div class="text-center">
+                                                                                <img id="avatarPreview" src=""
+                                                                                    alt="New Preview"
+                                                                                    style="display: none; width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px dashed #0d6efd;">
+                                                                                <div class="small text-primary mt-1"
+                                                                                    id="previewLabel"
+                                                                                    style="display: none;">Mới</div>
+                                                                            </div>
+                                                            </div>
+
+                                                            <input class="form-control mt-3" type="file"
+                                                                id="avatarInput" name="avatar" accept="image/*">
+                                                            <div class="form-text">Chọn ảnh mới nếu bạn muốn thay đổi
+                                                                avatar cũ.</div>
+                                                        </div>
+
+                                                        <div class="mt-4 mb-0 d-flex justify-content-end gap-2">
+                                                            <a href="/admin/user" class="btn btn-secondary">Quay lại</a>
+                                                            <button type="submit" class="btn btn-primary">Lưu thay
+                                                                đổi</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                        </div>
+                    </main>
+
+                    <%- include('../partials/footer') %>
+                </div>
+        </div>
+
+        <%- include('../partials/scripts') %>
+
+            <script>
+                $(document).ready(() => {
+                    $("#avatarInput").change(function () {
+                        if (this.files && this.files[0]) {
+                            $("#previewLabel").show();
+                        }
+                    });
+                });
+            </script>
+</body>
+
+</html>

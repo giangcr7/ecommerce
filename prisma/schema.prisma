@@ -1,0 +1,98 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --------------------------------------
+// 2. MODEL PHÂN QUYỀN & NGƯỜI DÙNG
+// --------------------------------------
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  users       User[]
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  email       String   @unique
+  password    String
+  fullName    String?
+  address     String?
+  phone       String?
+  avatar      String?
+  accountType String?  @default("local")
+  createdAt   DateTime @default(now())
+
+  roleId Int?
+  role   Role? @relation(fields: [roleId], references: [id])
+
+  orders Order[]
+}
+
+// --------------------------------------
+// 3. MODEL SẢN PHẨM
+// --------------------------------------
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Int
+  image      String?
+  detailDesc String?  @db.Text
+  shortDesc  String?
+  quantity   Int      @default(0)
+  sold       Int      @default(0)
+  factory    String?
+  target     String?
+  createdAt  DateTime @default(now())
+
+  orderItems OrderItem[]
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+}
+
+// --------------------------------------
+// 4. MODEL ĐƠN HÀNG 
+// --------------------------------------
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  totalPrice Int
+  status     String   @default("pending")
+  address    String?
+  note       String?
+  createdAt  DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id       Int @id @default(autoincrement())
+  quantity Int
+  price    Int
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+//5 MODEL CATEGORY
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  products    Product[]
+}

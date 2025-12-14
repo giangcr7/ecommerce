@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Edit Product - <%= title %>
+    </title>
+
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(() => {
+            $("#imageInput").change(function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const imgURL = URL.createObjectURL(file);
+                    $("#imagePreview").attr("src", imgURL);
+                    $("#imagePreview").css({ "display": "block" });
+                    $("#previewLabel").show();
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+    <%- include('../partials/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../partials/sidebar') %>
+
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Edit Product</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin/product">Products</a></li>
+                                <li class="breadcrumb-item active">Edit</li>
+                            </ol>
+
+                            <% if(typeof success !=='undefined' && success.length> 0) { %>
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    <%= success %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                <% } %>
+
+                                    <% if(typeof error !=='undefined' && error.length> 0) { %>
+                                        <div class="alert alert-danger alert-dismissible fade show">
+                                            <%= error %>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="alert"></button>
+                                        </div>
+                                        <% } %>
+
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <i class="fas fa-edit me-1"></i>
+                                                    Cập nhật sản phẩm: <b>
+                                                        <%= product.name %>
+                                                    </b>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form action="/admin/product/edit/<%= product.id %>" method="POST"
+                                                        enctype="multipart/form-data">
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="name" name="name"
+                                                                        type="text" value="<%= product.name %>"
+                                                                        required />
+                                                                    <label for="name">Tên sản phẩm</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="price" name="price"
+                                                                        type="number" min="0"
+                                                                        value="<%= product.price %>" required />
+                                                                    <label for="price">Giá tiền</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="quantity"
+                                                                        name="quantity" type="number" min="0"
+                                                                        value="<%= product.quantity %>" required />
+                                                                    <label for="quantity">Số lượng</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="factory"
+                                                                        name="factory" type="text"
+                                                                        value="<%= product.factory || '' %>" />
+                                                                    <label for="factory">Hãng sản xuất</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <select class="form-select" id="target"
+                                                                        name="target">
+                                                                        <option value="Gaming"
+                                                                            <%=product.target==='Gaming' ? 'selected'
+                                                                            : '' %>>Gaming</option>
+                                                                        <option value="Văn phòng"
+                                                                            <%=product.target==='Văn phòng' ? 'selected'
+                                                                            : '' %>>Văn phòng - Học tập</option>
+                                                                        <option value="Đồ họa"
+                                                                            <%=product.target==='Đồ họa' ? 'selected'
+                                                                            : '' %>>Đồ họa - Kỹ thuật</option>
+                                                                        <option value="Mỏng nhẹ"
+                                                                            <%=product.target==='Mỏng nhẹ' ? 'selected'
+                                                                            : '' %>>Mỏng nhẹ - Sang trọng</option>
+                                                                    </select>
+                                                                    <label for="target">Loại máy</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="shortDesc"
+                                                                        name="shortDesc" type="text"
+                                                                        value="<%= product.shortDesc || '' %>" />
+                                                                    <label for="shortDesc">Mô tả ngắn</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="detailDesc" class="form-label fw-bold">Mô tả chi
+                                                                tiết</label>
+                                                            <textarea class="form-control" id="detailDesc"
+                                                                name="detailDesc"
+                                                                rows="5"><%= product.detailDesc || '' %></textarea>
+                                                        </div>
+
+                                                        <div class="mb-3 p-3 border rounded bg-light">
+                                                            <label class="form-label fw-bold">Ảnh sản phẩm</label>
+
+                                                            <div class="d-flex align-items-center gap-5">
+
+                                                                <% if(product.image) { %>
+                                                                    <div class="text-center">
+                                                                        <% let imgUrl=product.image; if (imgUrl &&
+                                                                            !imgUrl.startsWith('http')) { imgUrl='/' +
+                                                                            imgUrl.replace(/^public[\\/]/, ''
+                                                                            ).replace(/\\/g, '/' ); } %>
+                                                                            <img src="<%= imgUrl %>" alt="Current Image"
+                                                                                style="width: 150px; height: 150px; object-fit: contain; border: 1px solid #ccc; background: white;">
+                                                                            <div class="small text-muted mt-1">Hiện tại
+                                                                            </div>
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div class="text-center text-muted">Chưa có ảnh
+                                                                        </div>
+                                                                        <% } %>
+
+                                                                            <div class="text-muted"><i
+                                                                                    class="fas fa-arrow-right"></i>
+                                                                            </div>
+
+                                                                            <div class="text-center">
+                                                                                <img id="imagePreview" src=""
+                                                                                    alt="New Preview"
+                                                                                    style="display: none; width: 150px; height: 150px; object-fit: contain; border: 2px dashed #0d6efd;">
+                                                                                <div class="small text-primary mt-1"
+                                                                                    id="previewLabel"
+                                                                                    style="display: none;">Ảnh Mới</div>
+                                                                            </div>
+                                                            </div>
+
+                                                            <input class="form-control mt-3" type="file" id="imageInput"
+                                                                name="image" accept="image/*">
+                                                            <div class="form-text">Chọn ảnh mới nếu muốn thay đổi ảnh
+                                                                hiện tại.</div>
+                                                        </div>
+
+                                                        <div class="mt-4 mb-0 d-flex justify-content-end gap-2">
+                                                            <a href="/admin/product" class="btn btn-secondary">Quay
+                                                                lại</a>
+                                                            <button type="submit" class="btn btn-primary">Lưu thay
+                                                                đổi</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                        </div>
+                    </main>
+
+                    <%- include('../partials/footer') %>
+                </div>
+        </div>
+
+        <%- include('../partials/scripts') %>
+</body>
+
+</html>
