@@ -17,7 +17,7 @@ import indexRoutes from './routes/index.routes';
 import dashboardRoutes from "./routes/admin/dashboard.routes";
 import userRoutes from './routes/admin/user.routes';
 import productRoutes from './routes/admin/product.routes';
-
+import categoryRoutes from './routes/admin/category.routes';
 dotenv.config();
 
 const app: Application = express();
@@ -58,5 +58,5 @@ app.use('/', indexRoutes); // Trang chủ
 app.use('/admin', checkLogin, dashboardRoutes);
 app.use('/admin/user', checkLogin, userRoutes);
 app.use('/admin/product', checkLogin, productRoutes);
-
+app.use('/admin/category', checkLogin, categoryRoutes);
 export default app;

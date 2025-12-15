@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Update Category - <%= title %>
+    </title>
+
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body class="sb-nav-fixed">
+
+    <%- include('../partials/header') %>
+
+        <div id="layoutSidenav">
+            <%- include('../partials/sidebar') %>
+
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Update Category</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin/category">Category</a></li>
+                                <li class="breadcrumb-item active">Update</li>
+                            </ol>
+
+                            <% if(typeof success !=='undefined' && success.length> 0) { %>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <%= success %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <% if(typeof error !=='undefined' && error.length> 0) { %>
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <%= error %>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <% } %>
+
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <i class="fas fa-edit me-1"></i>
+                                                    Cập nhật danh mục: <b>
+                                                        <%= category.name %>
+                                                    </b>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form action="/admin/category/edit/<%= category.id %>"
+                                                        method="POST">
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating mb-3 mb-md-0">
+                                                                    <input class="form-control" id="name" type="text"
+                                                                        name="name" value="<%= category.name %>"
+                                                                        required />
+                                                                    <label for="name">Tên danh mục (Name)</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-floating">
+                                                                    <input class="form-control" id="description"
+                                                                        type="text" name="description"
+                                                                        value="<%= category.description || '' %>" />
+                                                                    <label for="description">Mô tả (Description)</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="mt-4 mb-0 d-flex justify-content-end gap-2">
+                                                            <a href="/admin/category" class="btn btn-secondary">Quay
+                                                                lại</a>
+                                                            <button type="submit" class="btn btn-primary">Lưu thay
+                                                                đổi</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                        </div>
+                    </main>
+
+                    <%- include('../partials/footer') %>
+                </div>
+        </div>
+
+        <%- include('../partials/scripts') %>
+</body>
+
+</html>

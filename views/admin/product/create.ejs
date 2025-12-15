@@ -63,7 +63,7 @@
                                                         <div class="form-floating mb-3 mb-md-0">
                                                             <input class="form-control" id="name" name="name"
                                                                 type="text" placeholder="Tên sản phẩm" required />
-                                                            <label for="name">Tên sản phẩm (Product Name)</label>
+                                                            <label for="name">Tên sản phẩm (Name)</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
@@ -87,7 +87,7 @@
                                                         <div class="form-floating">
                                                             <input class="form-control" id="factory" name="factory"
                                                                 type="text" placeholder="Nhà sản xuất" />
-                                                            <label for="factory">Hãng sản xuất (Factory/Brand)</label>
+                                                            <label for="factory">Hãng sản xuất (Factory)</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -95,24 +95,28 @@
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <div class="form-floating mb-3 mb-md-0">
-                                                            <select class="form-select" id="category" name="categoryId">
+                                                            <select class="form-select" id="category" name="categoryId"
+                                                                required>
+                                                                <option value="" disabled selected>-- Chọn danh mục --
+                                                                </option>
+
                                                                 <% if(categories && categories.length> 0) { %>
-                                                                    <% categories.forEach(function(category) { %>
-                                                                        <option value="<%= category.id %>">
-                                                                            <%= category.name %>
+                                                                    <% categories.forEach(cat=> { %>
+                                                                        <option value="<%= cat.id %>">
+                                                                            <%= cat.name %>
                                                                         </option>
-                                                                        <% }); %>
+                                                                        <% }) %>
                                                                             <% } %>
                                                             </select>
-                                                            <label for="target">Loại máy (Target)</label>
+                                                            <label for="category">Danh mục sản phẩm (Category)</label>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-md-6">
                                                         <div class="form-floating">
                                                             <input class="form-control" id="shortDesc" name="shortDesc"
                                                                 type="text" placeholder="Mô tả ngắn" />
-                                                            <label for="shortDesc">Mô tả ngắn (Short
-                                                                Description)</label>
+                                                            <label for="shortDesc">Mô tả ngắn (Short Desc)</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -121,8 +125,7 @@
                                                     <label for="detailDesc" class="form-label fw-bold">Mô tả chi
                                                         tiết</label>
                                                     <textarea class="form-control" id="detailDesc" name="detailDesc"
-                                                        rows="5"
-                                                        placeholder="Nhập thông tin chi tiết sản phẩm..."></textarea>
+                                                        rows="5" placeholder="Nhập thông tin chi tiết..."></textarea>
                                                 </div>
 
                                                 <div class="mb-3 p-3 border rounded bg-light">
