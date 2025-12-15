@@ -9,7 +9,7 @@ datasource db {
 }
 
 // --------------------------------------
-// 2. MODEL PHÂN QUYỀN & NGƯỜI DÙNG
+// 1. MODEL PHÂN QUYỀN & NGƯỜI DÙNG
 // --------------------------------------
 
 model Role {
@@ -34,12 +34,21 @@ model User {
   roleId Int?
   role   Role? @relation(fields: [roleId], references: [id])
 
+  // Quan hệ ngược
   orders Order[]
+  cart   Cart? // [MỚI] Mỗi User có 1 giỏ hàng
 }
 
 // --------------------------------------
-// 3. MODEL SẢN PHẨM
+// 2. MODEL SẢN PHẨM & DANH MỤC
 // --------------------------------------
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  products    Product[]
+}
 
 model Product {
   id         Int      @id @default(autoincrement())
@@ -54,22 +63,60 @@ model Product {
   target     String?
   createdAt  DateTime @default(now())
 
-  orderItems OrderItem[]
-  category   Category?   @relation(fields: [categoryId], references: [id])
   categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  // Quan hệ ngược
+  orderItems OrderItem[]
+  cartItems  CartItem[] // [MỚI] Sản phẩm nằm trong giỏ hàng
 }
 
 // --------------------------------------
-// 4. MODEL ĐƠN HÀNG 
+// 3. MODEL GIỎ HÀNG (CART) - [MỚI HOÀN TOÀN]
+// --------------------------------------
+
+model Cart {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique // 1 User chỉ có 1 giỏ hàng
+  user   User @relation(fields: [userId], references: [id])
+
+  items     CartItem[] // Giỏ hàng chứa nhiều sản phẩm
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id Int @id @default(autoincrement())
+
+  cartId Int
+  cart   Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity Int @default(1)
+
+  // Đảm bảo trong 1 giỏ hàng, 1 sản phẩm chỉ xuất hiện 1 dòng (nếu thêm trùng thì tăng số lượng)
+  @@unique([cartId, productId])
+}
+
+// --------------------------------------
+// 4. MODEL ĐƠN HÀNG (ORDER) - [ĐÃ CẬP NHẬT]
 // --------------------------------------
 
 model Order {
-  id         Int      @id @default(autoincrement())
-  totalPrice Int
-  status     String   @default("pending")
-  address    String?
-  note       String?
+  id Int @id @default(autoincrement())
+
+  // Thông tin người nhận (Lưu cứng tại thời điểm đặt hàng)
+  fullName String // [MỚI] Tên người nhận
+  phone    String // [MỚI] SĐT người nhận
+  address  String // [MỚI] Địa chỉ giao hàng
+  note     String? // Ghi chú
+
+  totalPrice Float // Tổng tiền
+  status     String   @default("PENDING") // PENDING, SHIPPING, COMPLETED, CANCELLED
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
@@ -78,21 +125,14 @@ model Order {
 }
 
 model OrderItem {
-  id       Int @id @default(autoincrement())
-  quantity Int
-  price    Int
+  id Int @id @default(autoincrement())
 
   orderId Int
-  order   Order @relation(fields: [orderId], references: [id])
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade) // Xóa đơn hàng thì xóa luôn chi tiết
 
   productId Int
   product   Product @relation(fields: [productId], references: [id])
-}
 
-//5 MODEL CATEGORY
-model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String?
-  products    Product[]
+  quantity Int
+  price    Float // Lưu giá tại thời điểm mua (để sau này giá SP đổi không ảnh hưởng đơn cũ)
 }
